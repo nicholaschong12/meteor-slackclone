@@ -5,7 +5,7 @@ messages: Messages.find()
 
 //Footer keypress
 Template.footer.events({
-  'keypress input': function(e) {
+  /*'keypress input': function(e) {
     var inputVal = $('.input-box_text').val();
     if(!!inputVal) {
       var charCode = (typeof e.which == "number") ? e.which : e.keyCode;
@@ -16,5 +16,15 @@ Template.footer.events({
         return false;
       }    
     }
+  }*/
+  'submit .input-box-form': function(e){ 
+	  e.preventDefault();
+	  var inputVal = $('.input-box_text').val();
+	 
+	  if(inputVal != ""){ 
+		  Messages.insert({text: inputVal});
+		  $(".input-box_text").val("");
+		  return false;
+	  }
   }
 });
