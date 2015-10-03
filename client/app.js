@@ -1,10 +1,6 @@
 Template.messages.helpers({
 messages: Messages.find()
 });
-Template.message.helpers({
-	//user: Messages.find()
-})
-
 
 //Footer keypress
 Template.footer.events({
@@ -23,16 +19,16 @@ Template.footer.events({
   'submit .input-box-form': function(e){ 
 	  e.preventDefault();
 	  var inputVal = $('.input-box_text').val();
-	 
-	  if(inputVal != ""){ console.log(Meteor.userId()),
-		  Messages.insert({text: inputVal,
+	  if(inputVal != ""){
+		  Messages.insert({
+			  text:inputVal,
 			  users: Meteor.userId(),
-			  
-			  timeStamp: Date.now()
+			  timeStamp:Date.now(),
+			
 		  });
-		  $(".input-box_text").val("");
-		  //return false;
+		   $(".input-box_text").val("")
 	  }
+	
   }
 });
 
@@ -43,8 +39,10 @@ Accounts.ui.config({
     passwordSignupFields: 'USERNAME_AND_EMAIL'
 });
 
+//Template for displaying Username & Timesamp
+
 Template.registerHelper("usernameFromId", function (userId) {
-	console.log(userId);
+
     var user = Meteor.users.findOne({_id: userId});
     if (typeof user === "undefined") {
         return "Anonymous";
@@ -60,3 +58,16 @@ Template.registerHelper("timestampToTime", function (timestamp) {
     var seconds = "0" + date.getSeconds();
     return hours + ':' + minutes.substr(minutes.length-2) + ':' + seconds.substr(seconds.length-2);
 });
+
+//Client subscribe
+Meteor.subscribe('messages');
+Meteor.subscribe('allUsernames');
+
+Messages.allow({
+  insert: function (userId, doc) {
+    return true;
+  }
+});
+
+
+
