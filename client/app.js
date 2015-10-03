@@ -24,6 +24,7 @@ Template.footer.events({
 			  text:inputVal,
 			  users: Meteor.userId(),
 			  timeStamp:Date.now(),
+			  channel: Session.get('channel')
 			
 		  });
 		   $(".input-box_text").val("")
@@ -59,15 +60,35 @@ Template.registerHelper("timestampToTime", function (timestamp) {
     return hours + ':' + minutes.substr(minutes.length-2) + ':' + seconds.substr(seconds.length-2);
 });
 
-//Client subscribe
-Meteor.subscribe('messages');
-Meteor.subscribe('allUsernames');
-
-Messages.allow({
-  insert: function (userId, doc) {
-    return true;
-  }
+Template.listings.helpers({
+    channels: function () {
+        return Channels.find();
+    }
 });
+
+Meteor.startup(function(){
+	Session.set('channel',this.params.channel);
+});
+
+
+Template.channel.helpers({
+	active:function(){
+		if(Session.get('channel') === this.name){
+			return "active";
+		}else {
+			return "";
+		}
+	}
+});
+
+Template.messages.onCreated(function(){
+	//var self = this;
+	this.autorun(function(){
+		this.subscribe('messages',Session.get('channel'));
+	});
+});
+
+
 
 
 
